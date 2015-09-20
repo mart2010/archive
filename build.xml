@@ -1,0 +1,256 @@
+<?xml version="1.0"?>
+
+<project name="canvacWebStore" basedir="." default="usage" >
+
+	<property name="webapp.name" value="canvacWebStore"/>
+    <property file="build.properties"/>
+	<property name="web.dir" value="web"/>
+	<property name="src.dir" value="src"/>
+	<property name="tst.dir" value="test"/>
+	<!-- We build in the WEB-INF/classes output directory directly-->
+    <property name="build.dir" value="${web.dir}/WEB-INF/classes"/>
+    <property name="testbuild.dir" value=".test"/>
+    <property name="weblib.dir" value="${web.dir}/WEB-INF/lib"/>
+	<property name="dist.dir" value="dist"/>
+
+    <property environment="env"/>
+    <property name="tomcat.home" value="${env.CATALINA_HOME}"/>
+
+
+    <path id="master-classpath">
+        <pathelement location="${build.dir}" />
+         <fileset dir="${weblib.dir}">
+             <include name="*.jar"/>
+         </fileset>
+    </path>
+
+
+
+	<target name="usage">
+		<echo message=""/>
+		<echo message="Canvac WebStore build file"/>
+		<echo message="------------------------------------------------------"/>
+		<echo message=""/>
+		<echo message="Available targets are: ${tomcat.home}" />
+		<echo message=""/>
+		<echo message="clean            --> Clean output dirs"/>
+		<echo message="build            --> Compile main Java sources and copy libraries"/>
+		<echo message="testbuild            --> Compile test Java sources into /.test"/>
+		<echo message="Copy src/config/jsp to JAR -->Update the src and config into a JAR" />
+        <echo message="warfile          --> Build the web application archive"/>
+		<echo message="all -c,b,w       --> Clean, build, warfile"/>
+        <echo message="deploy             --> Install application in Tomcat"/>
+        <echo message="undeploy           --> Remove application from Tomcat"/>
+        <echo message="reload in Tomcat    --> Reload application in Tomcat"/>
+        <echo message="start Tomcat        --> Start Tomcat application"/>
+        <echo message="stop Tomcat         --> Stop Tomcat application"/>
+        <echo message="list Tomcat app     --> List Tomcat applications"/>
+        <echo message="test-struts        --> Run Struts Test Case"/>
+        <echo message="test-dao           --> Run DAO Test Case"/>
+        <echo message="test-domain        --> Run Domain Test Case"/>
+		<echo message=""/>
+	</target>
+
+
+	<target name="clean" description="Clean output dirs (build, testbuils, weblib, dist)">
+		<!--We now delete  WEB-INFO/classes, since config files are stored 
+		(.properties, log4j.properties) in /src and copied after each build-->
+        <delete dir="${build.dir}"/>
+		<delete dir="${dist.dir}"/>
+        <delete dir="${testbuild.dir}/ca"/>
+	</target>
+
+
+	<target name="build" description="Compile main source tree java files into class files">
+		<mkdir dir="${build.dir}"/>
+		<javac destdir="${build.dir}" target="1.4" debug="true"
+			deprecation="false" optimize="false" failonerror="true">
+			<src path="${src.dir}"/>
+			<classpath refid="master-classpath"/>
+		</javac>
+
+		<copy todir="${build.dir}" preservelastmodified="true">
+			<fileset dir="${src.dir}">
+				<include name="**/*.xml"/>
+				<include name="**/*.properties"/>
+			</fileset>
+		</copy>
+
+        <!-- Either use the compiled Class files as above or
+           - create the JAR files and saves it in the Lib directory:
+		   -  <jar jarfile="${weblib.dir}/${webapp.name}.jar" compress="true" basedir="${build.dir}"/>
+           -
+          -->
+	</target>
+
+    <target name="testbuild" depends="build" description="Compile test source tree java files into class files">
+        <mkdir dir="${testbuild.dir}"/>
+        <javac destdir="${testbuild.dir}" target="1.4" debug="true"
+            deprecation="false" optimize="false" failonerror="true">
+            <src path="${tst.dir}"/>
+            <classpath>
+                <path refid="master-classpath" />
+            </classpath>
+        </javac>
+    </target>
+
+
+    <target name="Copy src/config/jsp to JAR" depends="build">
+		<mkdir dir="${dist.dir}"/>
+        <delete file="${dist.dir}/config.jar" />
+        <jar jarfile="${dist.dir}/config.jar" >
+            <fileset dir="${basedir}">
+                   <include name="src/**/*.java" />
+                   <include name="src/**/*.xml" />
+                   <include name="test/**/*.java" />
+                   <include name="test/**/*.xml" />
+                   <include name="web/**/*.xml" />
+                   <include name="web/**/*.properties" />
+                   <include name="web/**/*.jsp" />
+            </fileset>
+        </jar>
+    </target>
+
+
+	<target name="warfile" depends="build" description="Build the web application archive">
+		<mkdir dir="${dist.dir}"/>
+		<war warfile="${dist.dir}/${webapp.name}.war" basedir="${web.dir}" webxml="${web.dir}/WEB-INF/web.xml">
+			<include name="*"/>
+			<include name="images/**"/>
+			<include name="WEB-INF/*.xml"/>
+			<include name="WEB-INF/*.properties"/>
+			<include name="WEB-INF/lib/**"/>
+			<include name="WEB-INF/jsp/**"/>
+		    <include name="WEB-INF/classes/**"/>
+		    <include name="WEB-INF/log/**"/>
+            <!--Here I should exclude all JAR not to be deployed along the Web app-->
+            <!-- the servlet-api, junit and strutstest are used for testing only -->
+            <exclude name="WEB-INF/lib/junit.jar"/>
+            <exclude name="WEB-INF/lib/strutstest-2.1.3.jar" />
+            <exclude name="WEB-INF/lib/servlet-api.jar" />
+            <exclude name="WEB-INF/lib/easymock.jar" />
+            <exclude name="**/.*"/>
+		</war>
+
+	</target>
+
+	<target name="all -c,b,w" depends="clean,build,warfile" description="Clean,build,warfile"/>
+
+
+
+     <!-- Tomcat Ant Tasks -->
+        <taskdef file="tomcatTasks.properties">
+            <classpath>
+                <pathelement path="${tomcat.home}/server/lib/catalina-ant.jar"/>
+            </classpath>
+        </taskdef>
+
+   <target name="deploy" description="Install application in Tomcat"
+        depends="warfile">
+        <deploy url="${tomcat.manager.url}"
+            username="${tomcat.manager.username}"
+            password="${tomcat.manager.password}"
+            path="/${webapp.name}"
+            war="file:${dist.dir}/${webapp.name}.war"/>
+    </target>
+
+    <target name="undeploy" description="Remove application from Tomcat">
+        <undeploy url="${tomcat.manager.url}"
+            username="${tomcat.manager.username}"
+            password="${tomcat.manager.password}"
+            path="/${webapp.name}"/>
+    </target>
+
+    <target name="reload" description="Reload application in Tomcat">
+        <reload url="${tomcat.manager.url}"
+            username="${tomcat.manager.username}"
+            password="${tomcat.manager.password}"
+            path="/${webapp.name}"/>
+    </target>
+
+    <target name="start" description="Start Tomcat application">
+        <start url="${tomcat.manager.url}"
+            username="${tomcat.manager.username}"
+            password="${tomcat.manager.password}"
+            path="/${webapp.name}"/>
+    </target>
+
+    <target name="stop" description="Stop Tomcat application">
+        <stop url="${tomcat.manager.url}"
+            username="${tomcat.manager.username}"
+            password="${tomcat.manager.password}"
+            path="/${webapp.name}"/>
+    </target>
+
+    <target name="list" description="List Tomcat applications">
+        <list url="${tomcat.manager.url}"
+            username="${tomcat.manager.username}"
+            password="${tomcat.manager.password}"/>
+    </target>
+
+    <!-- browse the database -->
+    <target name="browse DB"
+        description="Graphical Database Editing Tool (hsqldb-gui)">
+        <echo level="info">Opening HSQL GUI...</echo>
+        <java classname="org.hsqldb.util.DatabaseManager" fork="yes"
+            failonerror="true">
+            <classpath refid="master-classpath"/>
+            <arg value="-url"/>
+            <arg value="jdbc:hsqldb:db/.canvac"/>
+        </java>
+    </target>
+
+
+    <path id="test-classpath">
+        <pathelement location="${testbuild.dir}" />
+        <!-- the struts xml configuration file adapted for Test
+           - will overwrite the application struts-config.xml -->
+        <pathelement location="${tst.dir}" />
+        <pathelement location="${web.dir}" />
+        <path refid="master-classpath" />
+    </path>
+
+
+    <target name="test-struts" depends="testbuild" >
+           <junit fork="false" haltonfailure="false" showoutput="true" >
+              <classpath refid="test-classpath"/>
+               <formatter type="plain" usefile="false"/>
+               <batchtest>
+                 <fileset dir="${testbuild.dir}">
+                     <include name="ca/canvac/webstore/web/**/*.class" />
+                     <exclude name="ca/canvac/webstore/web/action/ActionBaseTest.class" />
+                 </fileset>
+               </batchtest>
+           </junit>
+     </target>
+
+     <target name="test-dao" depends="testbuild" >
+           <junit printsummary="on" fork="false" showoutput="true" >
+               <classpath refid="test-classpath" />
+               <formatter type="plain" usefile="false"/>
+               <batchtest>
+                 <fileset dir="${testbuild.dir}">
+                     <include name="ca/canvac/webstore/dao/**/*.class"/>
+<!--                     <include name="ca/canvac/webstore/dao/CatSubCatItemDaoTest.class"/> -->
+                     <exclude name="ca/canvac/webstore/dao/BaseDaoTest.class" />
+                 </fileset>
+               </batchtest>
+           </junit>
+     </target>
+
+    <target name="test-domain" depends="testbuild" >
+          <junit printsummary="on" fork="false" >
+              <classpath refid="test-classpath" />
+              <formatter type="plain" usefile="false"/>
+              <batchtest>
+                <fileset dir="${testbuild.dir}">
+                    <include name="ca/canvac/webstore/domain/**/*.class"/>
+                </fileset>
+              </batchtest>
+          </junit>
+    </target>
+
+
+    <target name="test-all" depends="test-struts,test-dao,test-domain" />
+
+</project>

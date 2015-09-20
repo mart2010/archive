@@ -1,0 +1,65 @@
+----------------------------- FOR THE DATABASE ------------------------------
+
+- update the table signon with the password from Canvac and validate that no new user
+   were added from the canvac site
+
+- change the sequenceDAO bean to use the Oracle one
+
+- put the driver ojdbc14.jar into the /lib
+
+- change the JDBC driver to Oracle in the datasource bean:
+
+<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">
+	<property name="driverClassName">
+	  	<value>org.hsqldb.jdbcDriver</value>
+	</property>
+	<property name="url">
+	  	<value>jdbc:hsqldb:hsql://localhost:9002</value>
+	</property>
+	<property name="username">
+		<value>SA</value>
+	</property>
+	<property name="password">
+		<value> <value/>
+	</property>
+</bean> 
+
+
+URL is of the form:
+  jdbc:oracle:<drivertype>:@<database>
+
+
+
+ex.  	you want to connect with the Thin driver, you must specify the port 
+	number and SID. For example, if you want to connect to the database 
+	on host myhost that has a TCP/IP listener up on port 1521, and the 
+	SID (system identifier) is orcl:
+
+Specifying a Database URL That Includes User Name and Password
+   "jdbc:oracle:thin:scott/tiger@myhost:1521:orcl"
+
+Specifying a Database URL That does not Include User Name and Password
+   "jdbc:oracle:thin:@myhost:1521:orcl"
+
+
+Use the:
+
+driverClassName = oracle.jdbc.driver.OracleDriver
+
+
+
+----------------------------- FOR THE ENV ------------------------------
+Install JDK1.4.x, Tomcat 5.x, ANT 1.6.x
+
+set the env for 
+-CATALINA_HOME, ANT_HOME, JAVA_HOME
+
+add to path for 
+- %CATALINA_HOME%/bin, %ANT_HOME%/bin, %JAVA_HOME%/bin
+
+
+----------------------------- FOR THE APP ------------------------------
+
+- Set the mail configuration (service active, from, to fields are mandatory)
+- 
+- 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Category">
+
+    <typeAlias alias="category" type="ca.canvac.webstore.domain.Category"/>
+
+    <cacheModel id="cat-cache" type="LRU">
+        <flushInterval hours="300"/>
+    </cacheModel>
+
+
+    <resultMap id="categoryResult" class="category">
+        <result property="categoryId" column="CATEGORY_ID"/>
+        <result property="name" column="CATEGORY_NAME"/>
+        <result property="description" column="CATEGORY_DESC"/>
+    </resultMap>
+
+    <select id="getCategory" resultMap="categoryResult" parameterClass="string">
+    select CATEGORY_ID, CATEGORY_NAME, CATEGORY_DESC
+    from CCD_CATEGORY where CATEGORY_ID = #value#
+    </select>
+
+    <select id="getCategoryList" resultMap="categoryResult" cacheModel="cat-cache">
+    select CATEGORY_ID, CATEGORY_NAME, CATEGORY_DESC 
+	from CCD_CATEGORY
+    </select>
+
+</sqlMap>

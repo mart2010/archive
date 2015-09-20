@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <!-- Here we group only Struts Action for which we want
+      - to use Bean injection with Spring -->
+
+    <bean name="/shop/addItemToCart" class="ca.canvac.webstore.web.action.AddItemToCartAction">
+      <property name="webStore"><ref bean="WebStore" /></property>
+    </bean>
+
+    <bean name="/shop/listOrders" class="ca.canvac.webstore.web.action.ListOrdersAction">
+      <property name="webStore"><ref bean="WebStore" /></property>
+    </bean>
+
+    <bean name="/shop/newOrder" class="ca.canvac.webstore.web.action.NewOrderAction">
+      <property name="webStore"><ref bean="WebStore" /></property>
+    </bean>
+
+    <bean name="/shop/searchItem" class="ca.canvac.webstore.web.action.SearchItemAction">
+      <property name="webStore"><ref bean="WebStore" /></property>
+      <property name="appConfig"><ref bean="appConfig" /></property>
+    </bean>
+
+    <bean name="/shop/signon" class="ca.canvac.webstore.web.action.SignonAction">
+      <property name="webStore"><ref bean="WebStore" /></property>
+    </bean>
+
+    <bean name="/shop/editAccount" class="ca.canvac.webstore.web.action.EditAccountAction">
+      <property name="webStore"><ref bean="WebStore" /></property>
+    </bean>
+
+    <bean name="/shop/editAccountForm" class="ca.canvac.webstore.web.action.EditAccountFormAction">
+      <property name="webStore"><ref bean="WebStore" /></property>
+    </bean>
+
+    <bean name="/shop/viewCategory" class="ca.canvac.webstore.web.action.ViewCategoryAction">
+      <property name="webStore"><ref bean="WebStore" /></property>
+    </bean>
+
+    <bean name="/shop/viewSubCategory" class="ca.canvac.webstore.web.action.ViewSubCategoryAction">
+      <property name="webStore"><ref bean="WebStore" /></property>
+    </bean>
+
+    <bean name="/shop/viewItem" class="ca.canvac.webstore.web.action.ViewItemAction">
+      <property name="webStore"><ref bean="WebStore" /></property>
+      <property name="appConfig"><ref bean="appConfig" /></property>
+    </bean>
+
+    <bean name="/shop/viewOrder" class="ca.canvac.webstore.web.action.ViewOrderAction">
+      <property name="webStore"><ref bean="WebStore" /></property>
+    </bean>
+
+
+</beans>

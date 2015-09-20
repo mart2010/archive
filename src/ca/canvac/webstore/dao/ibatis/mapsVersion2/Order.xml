@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="Order">
+
+    <typeAlias alias="order" type="ca.canvac.webstore.domain.Order"/>
+
+    <resultMap id="orderResult" class="order">
+        <result property="shipAddress1" column="SHIP_ADDR1"/>
+        <result property="shipAddress2" column="SHIP_ADDR2"/>
+        <result property="shipCity" column="SHIP_CITY"/>
+        <result property="shipCountry" column="SHIP_COUNTRY"/>
+        <result property="shipProvState" column="SHIP_PROV_STATE"/>
+        <result property="shipToFirstName" column="SHIPTO_FIRST_NAME"/>
+        <result property="shipToLastName" column="SHIPTO_LAST_NAME"/>
+        <result property="shipPostalZip" column="SHIP_POSTAL_ZIP"/>
+        <result property="fedex" column="FEDEX"/>
+        <result property="orderDate" column="ORDER_DATE"/>
+        <result property="orderId" column="ORDER_ID"/>
+        <result property="totalPrice" column="TOTAL_PRICE"/>
+        <result property="username" column="USER_ID"/>
+        <result property="comments" column="COMMENTS"/>
+    </resultMap>
+
+    <select id="getOrder" resultMap="orderResult" parameterClass="long">
+    select
+        SHIP_ADDR1, SHIP_ADDR2, SHIP_CITY, SHIP_COUNTRY, SHIP_PROV_STATE,
+        SHIPTO_FIRST_NAME, SHIPTO_LAST_NAME, SHIP_POSTAL_ZIP, FEDEX,
+        ORDER_DATE, ORDER_ID, TOTAL_PRICE, USER_ID, COMMENTS
+    from CCD_ORDERS where CCD_ORDERS.ORDER_ID = #value#
+    </select>
+
+    <select id="getOrdersByUsername" resultMap="orderResult" parameterClass="string">
+    select
+        SHIP_ADDR1, SHIP_ADDR2, SHIP_CITY, SHIP_COUNTRY, SHIP_PROV_STATE,
+        SHIPTO_FIRST_NAME, SHIPTO_LAST_NAME, SHIP_POSTAL_ZIP, FEDEX,
+        ORDER_DATE, ORDER_ID, TOTAL_PRICE, USER_ID, COMMENTS
+    from CCD_ORDERS where USER_ID = #value#
+    </select>
+
+    <insert id="insertOrder" parameterClass="order">
+    insert into CCD_ORDERS (ORDER_ID, USER_ID, ORDER_DATE, SHIP_ADDR1, SHIP_ADDR2,
+        SHIP_CITY, SHIP_PROV_STATE,SHIP_POSTAL_ZIP, SHIP_COUNTRY,
+        FEDEX, TOTAL_PRICE, SHIPTO_FIRST_NAME, SHIPTO_LAST_NAME, COMMENTS)
+        values (#orderId#, #username#, #orderDate#, #shipAddress1#, #shipAddress2#,
+                #shipCity#, #shipProvState#, #shipPostalZip#, #shipCountry#,
+                #fedex#, #totalPrice#, #shipToFirstName#, #shipToLastName#, #comments#)
+    </insert>
+
+    <delete id="deleteOrder" parameterClass="long">
+    delete
+    from CCD_ORDERS
+    where order_id = #value#
+    </delete>
+
+
+</sqlMap>

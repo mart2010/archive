@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<struts-config>
+
+	<form-beans>
+		<form-bean name="accountForm" type="ca.canvac.webstore.web.form.AccountActionForm"/>
+		<form-bean name="cartForm" type="ca.canvac.webstore.web.form.CartActionForm"/>
+		<form-bean name="workingAccountForm" type="ca.canvac.webstore.web.form.AccountActionForm"/>
+		<form-bean name="workingOrderForm" type="ca.canvac.webstore.web.form.OrderActionForm"/>
+	</form-beans>
+
+	<global-forwards>
+		<forward name="failure" path="/WEB-INF/jsp/Error.jsp" redirect="false"/>
+		<forward name="unknown-error" path="/WEB-INF/jsp/Error.jsp"/>
+		<forward name="global-signon" path="/WEB-INF/jsp/SignonForm.jsp"/>
+	</global-forwards>
+
+	<action-mappings>
+		<action path="/shop/addItemToCart" type="org.springframework.web.struts.DelegatingActionProxy"
+			name="cartForm" scope="session"
+			validate="false">
+			<forward name="success" path="/WEB-INF/jsp/Cart.jsp"/>
+		</action>
+		<action path="/shop/listOrders" type="org.springframework.web.struts.DelegatingActionProxy"
+			name="accountForm" scope="session"
+			validate="false">
+			<forward name="success" path="/WEB-INF/jsp/ListOrders.jsp"/>
+		</action>
+		<action path="/shop/newOrder" type="org.springframework.web.struts.DelegatingActionProxy"
+			name="workingOrderForm" scope="session"
+			validate="true" input="/WEB-INF/jsp/NewOrderForm.jsp">
+			<forward name="success" path="/WEB-INF/jsp/ViewOrder.jsp"/>
+		</action>
+		<action path="/shop/newOrderForm" type="ca.canvac.webstore.web.action.NewOrderFormAction"
+			name="workingOrderForm" scope="session"
+			validate="false">
+			<forward name="success" path="/WEB-INF/jsp/NewOrderForm.jsp"/>
+		</action>
+		<action path="/shop/removeItemFromCart" type="ca.canvac.webstore.web.action.RemoveItemFromCartAction"
+			name="cartForm" scope="session"
+			validate="false">
+			<forward name="success" path="/WEB-INF/jsp/Cart.jsp"/>
+		</action>
+		<action path="/shop/searchItem" type="org.springframework.web.struts.DelegatingActionProxy">
+			<forward name="success" path="/WEB-INF/jsp/SearchItem.jsp"/>
+		</action>
+		<action path="/shop/signon" type="org.springframework.web.struts.DelegatingActionProxy"
+			name="accountForm" scope="session"
+			validate="false">
+			<forward name="success" path="/shop/viewCategory.do"/>
+			<forward name="failureSignOn" path="/WEB-INF/jsp/SignonForm.jsp"/>
+		</action>
+		<action path="/shop/signonForm" type="ca.canvac.webstore.web.action.DoNothingAction"
+			validate="false">
+			<forward name="success" path="/WEB-INF/jsp/SignonForm.jsp"/>
+		</action>
+        <action path="/shop/editAccount" type="org.springframework.web.struts.DelegatingActionProxy"
+            name="workingAccountForm" scope="session"
+            validate="true" input="/WEB-INF/jsp/EditAccountForm.jsp">
+            <forward name="success" path="/shop/viewCategory.do"/>
+        </action>
+        <action path="/shop/editAccountForm" type="org.springframework.web.struts.DelegatingActionProxy"
+            name="workingAccountForm" scope="session"
+            validate="false">
+            <forward name="success" path="/WEB-INF/jsp/EditAccountForm.jsp"/>
+        </action>
+		<action path="/shop/updateCartQuantities" type="ca.canvac.webstore.web.action.UpdateCartQuantitiesAction"
+			name="cartForm" scope="session"
+			validate="false">
+			<forward name="success" path="/WEB-INF/jsp/Cart.jsp"/>
+		</action>
+		<action path="/shop/viewCart" type="ca.canvac.webstore.web.action.ViewCartAction"
+			name="cartForm" scope="session"
+			validate="false">
+			<forward name="success" path="/WEB-INF/jsp/Cart.jsp"/>
+		</action>
+        <action path="/shop/viewCategory" type="org.springframework.web.struts.DelegatingActionProxy"
+			validate="false">
+			<forward name="success" path="/WEB-INF/jsp/ViewCategory.jsp"/>
+		</action>
+        <action path="/shop/viewSubCategory" type="org.springframework.web.struts.DelegatingActionProxy">
+            <forward name="success" path="/WEB-INF/jsp/ViewSubCategory.jsp"/>
+        </action>
+		<action path="/shop/viewItem" type="org.springframework.web.struts.DelegatingActionProxy"
+            scope="session">
+			<forward name="success" path="/WEB-INF/jsp/ViewItem.jsp"/>
+		</action>
+		<action path="/shop/viewOrder" type="org.springframework.web.struts.DelegatingActionProxy"
+			name="accountForm" scope="session"
+			validate="false">
+			<forward name="success" path="/WEB-INF/jsp/ViewOrder.jsp"/>
+		</action>
+	</action-mappings>
+
+    <!--Message resource bundle to be used by the Validator/ActionErrors/ActionMessages
+       -null="false" indicates not to return empty message string when key is not found
+       -->
+    <message-resources null="false" parameter="messages">
+    </message-resources>
+
+    <!-- Use Declarative Validator instead of implementing Validate
+       - method in ActionForm  -->
+
+    <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+      <set-property
+        property="pathnames"
+        value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/>
+    </plug-in>
+
+    <!-- Use the Action as Spring Bean to use injection in Action -->
+
+    <plug-in className="org.springframework.web.struts.ContextLoaderPlugIn">
+      <set-property
+          property="contextConfigLocation"
+        value="/WEB-INF/action-servlet.xml" />
+    </plug-in>
+
+
+</struts-config>

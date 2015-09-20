@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<!-- This needs to be adjusted later for taking into account peptide, tetramer specific attr -->
+
+<sqlMap namespace="Item">
+
+    <typeAlias alias="item" type="ca.canvac.webstore.domain.Item"/>
+
+    <cacheModel id="item-cache" type="LRU">
+        <flushInterval hours="300"/>
+    </cacheModel>
+
+    <resultMap id="itemResult" class="item">
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="unitPrice" column="UNIT_PRICE"/>
+        <result property="unit" column="UNIT"/>
+        <result property="name" column="NAME"/>
+        <result property="subCategoryId" column="SUB_CATEGORY_ID"/>
+        <result property="charAttribute1" column="CHAR_ATTR1"/>
+        <result property="charAttribute2" column="CHAR_ATTR2"/>
+        <result property="charAttribute3" column="CHAR_ATTR3"/>
+        <result property="charAttribute4" column="CHAR_ATTR4"/>
+        <result property="charAttribute5" column="CHAR_ATTR5"/>
+        <result property="charAttribute6" column="CHAR_ATTR6"/>
+        <result property="charAttribute7" column="CHAR_ATTR7"/>
+        <result property="charAttribute8" column="CHAR_ATTR8"/>
+        <result property="charAttribute9" column="CHAR_ATTR9"/>
+    </resultMap>
+
+    <select id="getItemListBySubCategory" resultMap="itemResult"
+        cacheModel="item-cache" parameterClass="string">
+    <![CDATA[
+	select
+      I.ITEM_ID, I.UNIT_PRICE, I.UNIT, I.NAME, I.SUB_CATEGORY_ID,
+      I.CHAR_ATTR1, I.CHAR_ATTR2, I.CHAR_ATTR3, I.CHAR_ATTR4,
+      I.CHAR_ATTR5, I.CHAR_ATTR6, I.CHAR_ATTR7, I.CHAR_ATTR8, I.CHAR_ATTR9
+    from CCD_ITEM I 
+	where I.SUB_CATEGORY_ID = #value# 
+	And I.AVAIL_FLAG <> 'No'
+	]]>
+    </select>
+
+    <select id="getItem" resultMap="itemResult" parameterClass="long">
+	<![CDATA[
+      select
+          I.ITEM_ID, I.UNIT_PRICE, I.UNIT, I.NAME, I.SUB_CATEGORY_ID,
+          I.CHAR_ATTR1, I.CHAR_ATTR2, I.CHAR_ATTR3, I.CHAR_ATTR4,
+          I.CHAR_ATTR5, I.CHAR_ATTR6, I.CHAR_ATTR7, I.CHAR_ATTR8, I.CHAR_ATTR9 
+       from CCD_ITEM I 
+	   where I.ITEM_ID = #value#
+	   And I.AVAIL_FLAG <> 'No'	
+	]]>   
+    </select>
+
+
+    <!--used the flag store in Item -->
+    <select id="getAvailability" resultClass="string" parameterClass="string">
+    select avail_flag as value from CCD_ITEM where ITEM_ID = #value#
+    </select>
+
+    <select id="searchItemList" resultMap="itemResult" cacheModel="item-cache">
+        <![CDATA[
+		select I.ITEM_ID, I.UNIT_PRICE, I.UNIT, I.NAME, I.SUB_CATEGORY_ID,
+            I.CHAR_ATTR1, I.CHAR_ATTR2, I.CHAR_ATTR3, I.CHAR_ATTR4,
+            I.CHAR_ATTR5, I.CHAR_ATTR6, I.CHAR_ATTR7, I.CHAR_ATTR8, I.CHAR_ATTR9
+        from CCD_ITEM I
+		where I.AVAIL_FLAG <> 'No'
+		]]>
+        <dynamic>
+            <iterate property="keywordList" open="(" close=")" conjunction="OR">
+            lower(I.NAME) like #keywordList[]#
+            </iterate>
+        </dynamic>
+    </select>
+
+
+</sqlMap>

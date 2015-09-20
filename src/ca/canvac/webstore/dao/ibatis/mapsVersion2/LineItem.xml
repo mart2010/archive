@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="LineItem">
+
+    <typeAlias alias="lineItem" type="ca.canvac.webstore.domain.LineItem"/>
+
+    <resultMap id="lineItemResult" class="lineItem">
+        <result property="orderId" column="ORDER_ID"/>
+        <result property="lineNumber" column="LINENUM"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="itemName" column="NAME"/>
+        <result property="quantity" column="QUANTITY"/>
+        <result property="price" column="PRICE"/>
+    </resultMap>
+
+    <select id="getLineItemsByOrderId" resultMap="lineItemResult" parameterClass="long">
+    Select L.ORDER_ID, L.LINENUM, L.ITEM_ID, I.NAME, L.QUANTITY, L.PRICE
+    From CCD_LINE_ITEM L, CCD_ITEM I
+    Where L.ITEM_ID = I.ITEM_ID
+    AND L.ORDER_ID = #value#
+    </select>
+
+    <insert id="insertLineItem" parameterClass="lineItem">
+    insert into CCD_LINE_ITEM (ORDER_ID, LINENUM, ITEM_ID, QUANTITY, PRICE) values (#orderId#, #lineNumber#, #itemId#, #quantity#, #price#)
+    </insert>
+
+</sqlMap>

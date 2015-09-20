@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="SubCategory">
+
+    <typeAlias alias="subCategory" type="ca.canvac.webstore.domain.SubCategory"/>
+
+    <cacheModel id="subCat-cache" type="LRU">
+        <flushInterval hours="300"/>
+    </cacheModel>
+
+    <resultMap id="subCategoryResult" class="subCategory">
+        <result property="subCategoryId" column="SUB_CATEGORY_ID"/>
+        <result property="name" column="SUB_CATEGORY_NAME"/>
+        <result property="description" column="SUB_CATEGORY_DESC"/>
+        <result property="categoryId" column="CATEGORY_ID"/>
+    </resultMap>
+
+    <select id="getSubCategory" resultMap="subCategoryResult" parameterClass="string">
+    select SUB_CATEGORY_ID, SUB_CATEGORY_NAME, SUB_CATEGORY_DESC,CATEGORY_ID
+    from CCD_Sub_Category where SUB_CATEGORY_ID = #value#
+    </select>
+
+    <select id="getSubCategoryListByCategory" resultMap="subCategoryResult"
+        parameterClass="string" cacheModel="subCat-cache">
+    select SUB_CATEGORY_ID, SUB_CATEGORY_NAME, SUB_CATEGORY_DESC,CATEGORY_ID
+    from CCD_SUB_CATEGORY where CATEGORY_ID = #value#
+    </select>
+
+
+</sqlMap>

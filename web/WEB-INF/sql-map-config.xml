@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+  <settings
+    cacheModelsEnabled="true"
+    enhancementEnabled="true"
+    maxSessions="64"
+    maxTransactions="8"
+    maxRequests="128"/>
+
+    <sqlMap resource="ca/canvac/webstore/dao/ibatis/mapsVersion2/Account.xml"/>
+    <sqlMap resource="ca/canvac/webstore/dao/ibatis/mapsVersion2/Category.xml"/>
+    <sqlMap resource="ca/canvac/webstore/dao/ibatis/mapsVersion2/SubCategory.xml"/>
+    <sqlMap resource="ca/canvac/webstore/dao/ibatis/mapsVersion2/Item.xml"/>
+    <sqlMap resource="ca/canvac/webstore/dao/ibatis/mapsVersion2/Order.xml"/>
+    <sqlMap resource="ca/canvac/webstore/dao/ibatis/mapsVersion2/LineItem.xml"/>
+    <sqlMap resource="ca/canvac/webstore/dao/ibatis/mapsVersion2/Sequence.xml"/>
+
+</sqlMapConfig>
