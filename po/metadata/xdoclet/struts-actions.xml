@@ -1,0 +1,3 @@
+    <!-- Forwards to various jsp page  -->
+     <action path="/home" type="org.apache.struts.actions.ForwardAction"
+        parameter="/WEB-INF/jsp/home.jsp" />

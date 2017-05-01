@@ -1,0 +1,5 @@
+    <!--Message resource bundle to be used by the Validator/ActionErrors/ActionMessages
+       -null="false" indicates not to return empty message string when key is not found
+       -->
+    <message-resources null="false" parameter="messages">
+    </message-resources>

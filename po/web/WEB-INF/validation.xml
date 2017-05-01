@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE form-validation PUBLIC "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1.3//EN" "http://jakarta.apache.org/commons/dtds/validator_1_1_3.dtd">
+
+<form-validation>
+  <global>
+	<constant>
+		<constant-name>phone</constant-name>
+        <constant-value>^\(?(\d{3})\)?[-| ]?(\d{3})[-| ]?(\d{4})$</constant-value>
+	</constant>
+    <constant>
+		<constant-name>currency</constant-name>
+        <constant-value>^\d{1,3}(,?\d{1,3})*\.?(\d{1,2})?$</constant-value>
+	</constant> 
+
+	<constant>
+		<constant-name>beanNameMinLength</constant-name>
+        <constant-value>4</constant-value>
+    </constant> 
+
+	<constant>
+		<constant-name>beanNameMinLength2</constant-name>
+        <constant-value>2</constant-value>
+    </constant> 
+
+</global>
+
+  <formset>
+  <!--
+    Define form validation config in validation-forms.xml
+  -->
+
+      <form name="supplierForm">
+              <field property="name"
+                     depends="required,minlength">
+
+                  <arg0
+                    key="supplier.name"
+                  />
+                  <arg1
+                    key="${beanNameMinLength}"
+                      resource="false"
+                  />
+                  <var>
+                    <var-name>minlength</var-name>
+                    <var-value>${beanNameMinLength2}</var-value>
+                  </var>
+              </field>
+      </form>
+      <form name="itemForm">
+              <field property="name"
+                     depends="required">
+
+                  <arg0
+                    key="item.name"
+                  />
+              </field>
+              <field property="listPriceString"
+                     depends="required,mask">
+
+                  <arg0
+                    key="item.listPrice"
+                  />
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>${currency}</var-value>
+                  </var>
+              </field>
+      </form>
+      <form name="nameDescForm">
+              <field property="name"
+                     depends="required,minlength">
+
+                  <arg0
+                    key="obj.name"
+                  />
+                  <arg1
+                    key="${beanNameMinLength}"
+                      resource="false"
+                  />
+                  <var>
+                    <var-name>minlength</var-name>
+                    <var-value>${beanNameMinLength}</var-value>
+                  </var>
+              </field>
+      </form>
+      <form name="poForUserForm">
+              <field property="project"
+                     depends="required">
+
+                  <arg0
+                    key="po.project"
+                  />
+              </field>
+      </form>
+      <form name="userForm">
+              <field property="name"
+                     depends="required,minlength">
+
+                  <arg0
+                    key="user.username"
+                  />
+                  <arg1
+                      name="minlength"
+                    key="${var:minlength}"
+                      resource="false"
+                  />
+                  <var>
+                    <var-name>minlength</var-name>
+                    <var-value>${beanNameMinLength}</var-value>
+                  </var>
+              </field>
+              <field property="password"
+                     depends="required">
+
+                  <arg0
+                    key="user.password"
+                  />
+              </field>
+              <field property="confPassword"
+                     depends="required,validwhen">
+                  <msg
+                    name="validwhen"
+                    key="user.errorPassmatch"/>
+
+                  <arg0
+                    key="user.confPassword"
+                  />
+                  <var>
+                    <var-name>test</var-name>
+                    <var-value>(*this* == password)</var-value>
+                  </var>
+              </field>
+              <field property="email"
+                     depends="required,email">
+
+                  <arg0
+                    key="user.email"
+                  />
+              </field>
+              <field property="firstName"
+                     depends="required">
+
+                  <arg0
+                    key="user.firstName"
+                  />
+              </field>
+              <field property="lastName"
+                     depends="required">
+
+                  <arg0
+                    key="user.lastName"
+                  />
+              </field>
+              <field property="newLabName"
+                     depends="minlength">
+
+                  <arg0
+                    key="lab.name"
+                  />
+                  <arg1
+                    key="${beanNameMinLength}"
+                      resource="false"
+                  />
+                  <var>
+                    <var-name>minlength</var-name>
+                    <var-value>${beanNameMinLength2}</var-value>
+                  </var>
+              </field>
+      </form>
+  </formset>
+</form-validation>

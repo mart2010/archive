@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- ========================= GENERAL DEFINITIONS ========================= -->
+
+    <!-- The resource bundle basename -->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename"><value>messages</value></property>
+    </bean>
+
+
+
+	<!-- ========================= BUSINESS OBJECT MANAGER DEFINITIONS ========================= -->
+
+	<bean id="baseTransactionProxy" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		  abstract="true">
+		<property name="transactionManager"><ref bean="transactionManager"/></property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="save*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+
+	<bean id="itemManager" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="ca.po.model.service.impl.ItemManagerImpl">
+				<property name="itemDAO"><ref bean="itemDAO"/></property>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="userManager" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="ca.po.model.service.impl.UserManagerImpl">
+				<property name="userDAO"><ref bean="userDAO"/></property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="supplierManager" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="ca.po.model.service.impl.SupplierManagerImpl">
+				<property name="supplierDAO"><ref bean="supplierDAO"/></property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="poManager" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="ca.po.model.service.impl.PoManagerImpl">
+				<property name="poDAO"><ref bean="poDAO"/></property>
+				<property name="userDAO"><ref bean="userDAO"/></property>
+				<property name="cadConverter">
+					<ref local="moneyCADConverter"></ref>
+				</property>
+				<property name="emailConfirmation"><ref bean="emailConfirmation"/></property>
+			</bean>
+		</property>
+	</bean>
+
+
+
+
+    <!--Here, we group various application level Configuration
+      - WebPageSize, currency Rate Conversion Table, etc... 
+	  -->
+    <bean id="appConfig" class="ca.po.AppConfig">
+         <property name="webPageSize"><value>25</value></property>
+    </bean>
+
+	<bean id="moneyCADConverter" class="ca.po.util.converter.MoneyCADConverterImpl" >
+        <property name="conversionTable">
+            <map>
+                <entry key="USD">
+                    <value>0.8</value>
+                </entry>
+                <entry key="EUR">
+                    <value>0.7</value>
+                </entry>
+                <entry key="GBP">
+                    <value>0.5</value>
+                </entry>
+            </map>
+		</property>
+	</bean>
+
+
+	<!-- ========================= E-mail Service ========================= -->
+
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host"><value>relais.videotron.ca</value></property>
+	</bean>
+
+
+	<!-- Email Bean used to send confirmation email after order has been received -->
+    <!-- Important: when mailServiceActive=true, mailFrom and MailSender must have values
+       - otherwise the bean will not initialize and Web app will not load -->
+	<bean id="emailConfirmation" class="ca.po.util.SendEmailConfirmation" init-method="init" >
+        <property name="mailSender"><ref local="mailSender"/></property>
+        <!-- Important: only true or false are valid values (true is for activation)-->
+        <property name="mailServiceActive"><value>false</value></property>
+	    <property name="mailFrom"><value>martin_l_ouellet@videotron.ca</value></property>
+	    <property name="mailCC"><ref bean="ccMailList"></ref></property>
+	    <property name="subject"><value>Order email alert</value></property>
+	    <property name="staticMessageText"><value>Your Order was just received.  Here's its description:</value></property>
+    </bean>
+
+    <bean id="ccMailList" class="java.util.ArrayList">
+    <constructor-arg>
+      <list>
+        <value>martin.ouellet@myrealbox.com</value>
+      </list>
+    </constructor-arg>
+  </bean>
+
+
+</beans>

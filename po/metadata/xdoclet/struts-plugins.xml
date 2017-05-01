@@ -1,0 +1,9 @@
+
+    <!-- Use Declarative Validator instead of implementing Validate
+       - method in ActionForm  -->
+
+    <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+      <set-property
+        property="pathnames"
+        value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/>
+    </plug-in>

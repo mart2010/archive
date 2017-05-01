@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping
+>     
+    <class
+        name="ca.po.model.ItemSupplied"
+        table="po_item_supplied"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="itemSuppliedID"
+            column="item_supplied_id"
+            type="java.lang.Long"
+        >
+            <generator class="native">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-ItemSupplied.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="catalogNumber"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="catalogNumber"
+            length="30"
+        />
+
+        <property
+            name="bidInfo"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="bidInfo"
+            length="100"
+        />
+
+        <property
+            name="bidYear"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="bidYear"
+            length="4"
+        />
+
+        <many-to-one
+            name="supplier"
+            class="ca.po.model.Supplier"
+            cascade="save-update"
+            outer-join="true"
+            update="true"
+            insert="true"
+            foreign-key="fk_itemsupplied_supplier"
+            column="supplier_id"
+            not-null="true"
+        />
+
+        <many-to-one
+            name="item"
+            class="ca.po.model.Item"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            foreign-key="fk_itemsupplied_item"
+            column="item_id"
+            not-null="true"
+        />
+
+        <property
+            name="createdDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="createdDate"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-ItemSupplied.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

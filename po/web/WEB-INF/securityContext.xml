@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+   <!-- ======================== FILTER CHAIN ======================= -->
+
+	<bean id="filterChainProxy" class="net.sf.acegisecurity.util.FilterChainProxy">
+      <property name="filterInvocationDefinitionSource">
+		<!-- WARNING: the pattern string should not have new line... -->
+		<!-- removed : "remoteUserFilter" before anonymous .. -->
+         <value>
+		    CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON
+		    PATTERN_TYPE_APACHE_ANT
+			/**=httpSessionContextIntegrationFilter,authenticationProcessingFilter,anonymousProcessingFilter,securityEnforcementFilter
+         </value>
+      </property>
+    </bean>
+
+
+	<!-- Integration Filter bean to store in session the Authentication 
+	   - object held in ContextHolder in-between requests -->
+	<bean id="httpSessionContextIntegrationFilter" class="net.sf.acegisecurity.context.HttpSessionContextIntegrationFilter">
+		<property name="context"><value>net.sf.acegisecurity.context.security.SecureContextImpl</value></property>
+    </bean>
+
+
+	<!-- Authentification processing Filter bean -->
+	<bean id="authenticationProcessingFilter"
+			class="net.sf.acegisecurity.ui.webapp.AuthenticationProcessingFilter">
+		<property name="filterProcessesUrl">
+			<!-- default value...refer to action name in loginForm -->
+			<value>/j_acegi_security_check</value>
+		</property>
+		<property name="authenticationFailureUrl">
+			<value>/public/login.jsp?failed=true</value>
+		</property>
+		<!-- in case, the use enter by pointing directly at login.jsp -->
+		<property name="defaultTargetUrl">
+			<value>/home.html</value>
+		</property>
+		<property name="authenticationManager">
+			<ref bean="authenticationManager"/>
+		</property>
+	</bean>
+
+	<!-- Use to get convenient access to user and role -->
+	<bean id="remoteUserFilter" class="net.sf.acegisecurity.wrapper.ContextHolderAwareRequestFilter"/>
+	
+	
+	<bean id="anonymousProcessingFilter" class="net.sf.acegisecurity.providers.anonymous.AnonymousProcessingFilter">
+		<property name="key"><value>foobar</value></property>
+		<property name="userAttribute"><value>anonymousUser,ROLE_ANONYMOUS</value></property>
+	</bean>
+
+   <bean id="anonymousAuthenticationProvider" class="net.sf.acegisecurity.providers.anonymous.AnonymousAuthenticationProvider">
+      <property name="key"><value>foobar</value></property>
+   </bean>
+
+
+	<!-- Security Enforcement Filter bean -->
+	<bean id="securityEnforcementFilter" 
+		class="net.sf.acegisecurity.intercept.web.SecurityEnforcementFilter">
+		<property name="authenticationEntryPoint">
+			<ref bean="authenticationEntryPoint"/>
+		</property>
+		<property name="filterSecurityInterceptor">
+			<ref bean="filterInvocationInterceptor"/>
+		</property>
+	</bean>
+
+	<!-- Authentication entry point -->
+	<bean id="authenticationEntryPoint" 
+		class="net.sf.acegisecurity.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+		<property name="loginFormUrl">
+			<value>/public/login.jsp</value>
+		</property>
+		<property name="forceHttps"><value>false</value></property>
+	</bean>
+
+	<!-- Security interceptor -->
+	<bean id="filterInvocationInterceptor" 
+			class="net.sf.acegisecurity.intercept.web.FilterSecurityInterceptor">
+		<property name="authenticationManager">
+			<ref bean="authenticationManager"/>
+		</property>
+		<property name="accessDecisionManager">
+			<ref bean="accessDecisionManager"/>
+		</property>
+		<property name="objectDefinitionSource">
+			<!-- Important: more specific URL parttern must come before less -->
+			<value>
+				CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON
+				PATTERN_TYPE_APACHE_ANT
+				/admin/**=PO_Admin
+				/public/**=ROLE_ANONYMOUS,PO_User,PO_Admin
+				/index.jsp/**=ROLE_ANONYMOUS,PO_User,PO_Admin
+				/**=PO_User,PO_Admin
+			</value>
+		</property>
+	</bean>
+
+	<!-- Using a DAO authentication provider -->
+	<bean id="authenticationManager"
+			class="net.sf.acegisecurity.providers.ProviderManager">
+		<property name="providers">
+		<list>
+			<ref bean="daoAuthenticationProvider"/>
+			<ref local="anonymousAuthenticationProvider"/>
+		</list>
+		</property>
+	</bean>
+
+	<bean id="daoAuthenticationProvider" 
+			class="net.sf.acegisecurity.providers.dao.DaoAuthenticationProvider">
+		<!-- here I refer to userDAO explicitely  -->
+		<property name="authenticationDao">
+			<ref bean="userDAO"/>
+		</property>
+		<property name="userCache">
+			<ref bean="userCache"/>
+		</property>
+
+	</bean>
+
+	<!-- Athentication DAO, relying on Datasource bean
+	<bean id="authenticationDao"
+			class="ca.po.model.dao.hibernate.UserDAOHibernateImpl">
+		<property name="dataSource">
+			<ref bean="dataSource"/>
+		</property>
+	</bean>
+	-->
+	<bean id="roleVoter" class="net.sf.acegisecurity.vote.RoleVoter">
+        <property name="rolePrefix"><value/></property>
+    </bean>
+
+    <bean id="accessDecisionManager" class="net.sf.acegisecurity.vote.AffirmativeBased">
+        <property name="allowIfAllAbstainDecisions"><value>false</value></property>
+        <property name="decisionVoters">
+            <list>
+               <ref local="roleVoter"/>
+            </list>
+        </property>
+    </bean>
+
+
+		<!-- use eH caching.. to do configure this with Hibernate config  -->
+		<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		  <property name="configLocation">
+		    <value>classpath:/ehcache.xml</value>
+		  </property>
+		</bean>
+	
+	
+		<bean id="userCacheBackend" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		  <property name="cacheManager">
+		    <ref local="cacheManager"/>
+		  </property>
+		  <property name="cacheName">
+		    <value>userCache</value>
+		  </property>
+		</bean>
+   
+		<bean id="userCache" class="net.sf.acegisecurity.providers.dao.cache.EhCacheBasedUserCache">
+		  <property name="cache"><ref local="userCacheBackend"/></property>
+		</bean>
+		
+
+</beans>

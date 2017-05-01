@@ -1,0 +1,316 @@
+<?xml version="1.0"?>
+
+<project name="PO" basedir="." default="usage">
+
+	<property name="webapp.name" value="po4lab"/>
+    <property file="build.properties"/>
+	<property name="web.dir" value="web"/>
+	<property name="src.dir" value="src"/>
+	<property name="tst.dir" value="test"/>
+	
+	<!-- We build in the WEB-INF/classes output directory directly-->
+    <property name="build.dir" value="${web.dir}/WEB-INF/classes"/>
+    <property name="buildtest.dir" value=".test"/>
+    <property name="buildTestLib.dir" value="extraLib/testLib"/>
+	<property name="weblib.dir" value="${web.dir}/WEB-INF/lib"/>
+	<property name="dist.dir" value="dist"/>
+
+    <property environment="env"/>
+    <property name="tomcat.home" value="${env.CATALINA_HOME}"/>
+
+
+    <path id="master-classpath">
+        <pathelement location="${build.dir}" />
+         <fileset dir="${weblib.dir}">
+             <include name="*.jar"/>
+         </fileset>
+    </path>
+
+    <path id="xdoclet-classpath">
+        <fileset dir="${weblib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+    	<fileset dir="extraLib/xdocletLib">
+             <include name="*.jar"/>
+         </fileset>
+    </path>
+
+	<target name="usage">
+		<echo message=""/>
+		<echo message="Purchase Order build file"/>
+		<echo message="------------------------------------------------------"/>
+	</target>
+
+	<target name="Clean" description="Clean output dirs (build, testbuils, weblib, dist)">
+		<!--Don't Delete  WEB-INFO/classes!! but root ca/ -->
+        <delete dir="${build.dir}"/>
+		<delete dir="${dist.dir}"/>
+        <delete dir="${buildtest.dir}/ca"/>
+	</target>
+
+	<target name="Hibernate-Gen-Mapping" depends="Build">
+		<taskdef name="hibernatedoclet"
+			classname="xdoclet.modules.hibernate.HibernateDocletTask"
+	    	classpathref="xdoclet-classpath">
+		</taskdef>
+		<hibernatedoclet destdir="${src.dir}" excludedtags="@version,@author,@todo"
+						 force="false" mergeDir="metadata/xdoclet" verbose="true">
+			<fileset dir="${src.dir}">
+				<include name="ca/po/model/*.java"/>
+			</fileset>
+			<hibernate version="2.0" mergeDir="metadata/xdoclet" />
+		</hibernatedoclet>
+	</target>
+
+	<!-- Adjust the porpoerties file based on the targetted DBMS --> 
+	<target name="Hibernate-Gen-Schema" depends="Hibernate-Gen-Mapping" >
+		<taskdef name="schemaexport"
+			classname="net.sf.hibernate.tool.hbm2ddl.SchemaExportTask"
+			classpathref="master-classpath" />
+		<schemaexport
+			properties="${build.dir}/hibernateHSQL.properties"
+			quiet="no"
+			text="yes" drop="no"
+			delimiter=";"
+			output="db/hsqldb/schema-export.sql">
+			<fileset dir="src">
+				<include name="ca/po/model/**.hbm.xml"/>
+			</fileset>
+		</schemaexport>
+	</target>
+
+	<target name="Struts-Gen-Config" depends="Build">
+		 <taskdef
+            name="webdoclet"
+			classname="xdoclet.modules.web.WebDocletTask"
+	    	classpathref="xdoclet-classpath">
+		 </taskdef>
+
+		<webdoclet destdir="${web.dir}/WEB-INF" mergeDir="./metadata/xdoclet" verbose="true">
+			<fileset dir="${src.dir}">
+				<include name="ca/po/web/action/**/*.java"/>
+				<include name="ca/po/web/form/**/*.java"/>
+			</fileset>
+            <strutsconfigxml validateXML="true" version="1.2"/>
+			<strutsvalidationxml validatexml="true" version="1.1.3"/>
+	    </webdoclet>
+	</target>
+
+		
+	<target name="Build" description="Compile main source tree java files into class files">
+		<mkdir dir="${build.dir}"/>
+		<javac destdir="${build.dir}" target="1.4" source="1.4"
+			deprecation="false" optimize="false" failonerror="true">
+			<src path="${src.dir}"/>
+			<classpath refid="master-classpath"/>
+		</javac>
+
+		<copy todir="${build.dir}" preservelastmodified="true">
+			<fileset dir="${src.dir}">
+				<include name="**/*.xml"/>
+				<include name="**/*.properties"/>
+			</fileset>
+		</copy>
+
+        <!-- Either use the compiled Class files as above or
+           - create the JAR files and saves it in the Lib directory:
+		   -  <jar jarfile="${weblib.dir}/${webapp.name}.jar" compress="true" basedir="${build.dir}"/>
+           -
+          -->
+	</target>
+
+    <path id="test-classpath">
+        <pathelement location="${buildtest.dir}" />
+        <!-- if I need a diff struts config: the struts xml configuration file adapted for Test
+           - will overwrite the application struts-config.xml -->
+        <pathelement location="${tst.dir}" />
+        <pathelement location="${web.dir}" />
+        <path refid="master-classpath" />
+    	<fileset dir="${buildTestLib.dir}">
+    		<include name="*.jar"/>
+        </fileset>
+    </path>
+
+	
+    <target name="Build-test" depends="Build" description="Compile test source tree java files into class files">
+        <mkdir dir="${buildtest.dir}"/>
+        <javac destdir="${buildtest.dir}" target="1.4" debug="true"
+            deprecation="false" optimize="false" failonerror="true">
+            <src path="${tst.dir}"/>
+            <classpath>
+                <path refid="test-classpath" />
+            </classpath>
+        </javac>
+    </target>
+
+
+    <target name="Copy src/config/jsp to JAR" depends="Build">
+		<mkdir dir="${dist.dir}"/>
+        <delete file="${dist.dir}/config.jar" />
+        <jar jarfile="${dist.dir}/config.jar" >
+            <fileset dir="${basedir}">
+                   <include name="src/**/*.java" />
+                   <include name="src/**/*.xml" />
+                   <include name="test/**/*.java" />
+                   <include name="test/**/*.xml" />
+                   <include name="web/**/*.xml" />
+                   <include name="web/**/*.properties" />
+                   <include name="web/**/*.jsp" />
+            </fileset>
+        </jar>
+    </target>
+
+
+	<target name="Build-warfile" depends="Build" description="Build the web application archive">
+		<mkdir dir="${dist.dir}"/>
+		<war warfile="${dist.dir}/${webapp.name}.war" basedir="${web.dir}" webxml="${web.dir}/WEB-INF/web.xml">
+			<include name="*"/>
+			<include name="public/**"/>
+			<include name="WEB-INF/*.xml"/>
+			<include name="WEB-INF/*.properties"/>
+			<include name="WEB-INF/lib/**"/>
+			<include name="WEB-INF/jsp/**"/>
+			<include name="WEB-INF/classes/**"/>
+			<include name="WEB-INF/log/**"/>
+            <!--Here I should exclude all JAR not to be deployed along the Web app-->
+			<!-- servlet-api.jar should be provided by the Web container -->
+			<exclude name="WEB-INF/lib/servlet*.jar" />
+			<!-- exclude Oracle or HSQL depending on deployement type -->
+			<!--<exclude name="WEB-INF/lib/ojdbc*.jar" /> -->
+			<exclude name="**/.*"/>
+		</war>
+
+	</target>
+
+	<target name="all -c,b,w" depends="Clean,Build,Build-warfile" description="Clean,Build,Build-warfile"/>
+
+
+
+     <!-- Tomcat Ant Tasks -->
+        <taskdef file="tomcatTasks.properties">
+            <classpath>
+                <pathelement path="${tomcat.home}/server/lib/catalina-ant.jar"/>
+            </classpath>
+
+        </taskdef>
+
+	   <target name="Tomcat-App-deploy" description="Install application in Tomcat"
+	        depends="Build-warfile">
+	        <deploy url="${tomcat.manager.url}"
+	            username="${tomcat.manager.username}"
+	            password="${tomcat.manager.password}"
+	            path="/${webapp.name}"
+	            war="file:${dist.dir}/${webapp.name}.war"/>
+	    </target>
+
+    <target name="Tomcat-App-undeploy" description="Remove application from Tomcat">
+        <undeploy url="${tomcat.manager.url}"
+            username="${tomcat.manager.username}"
+            password="${tomcat.manager.password}"
+            path="/${webapp.name}"/>
+    </target>
+	
+    <target name="Tomcat-App-reload" description="Reload application in Tomcat">
+        <reload url="${tomcat.manager.url}"
+            username="${tomcat.manager.username}"
+            password="${tomcat.manager.password}"
+            path="/${webapp.name}"/>
+    </target>
+
+
+
+    <target name="Tomcat-App-start" description="Start Tomcat application">
+        <start url="${tomcat.manager.url}"
+            username="${tomcat.manager.username}"
+            password="${tomcat.manager.password}"
+            path="/${webapp.name}"  />
+    </target>
+
+    <target name="Tomcat-App-stop" description="Stop Tomcat application">
+        <stop url="${tomcat.manager.url}"
+            username="${tomcat.manager.username}"
+            password="${tomcat.manager.password}"
+            path="/${webapp.name}" />
+    </target>
+
+    <target name="Tomcat-list" description="List Tomcat applications">
+        <list url="${tomcat.manager.url}"
+            username="${tomcat.manager.username}"
+            password="${tomcat.manager.password}"/>
+    </target>
+
+	
+	<!-- browse the database -->
+    <target name="browse DB"
+        description="Graphical Database Editing Tool (hsqldb-gui)">
+        <echo level="info">Opening HSQL GUI...</echo>
+        <java classname="org.hsqldb.util.DatabaseManager" fork="yes"
+            failonerror="true">
+            <classpath refid="master-classpath"/>
+            <arg value="-url"/>
+            <arg value="jdbc:hsqldb:db/po"/>
+        </java>
+    </target>
+
+
+
+
+    <target name="Test-struts" depends="Build-test" >
+           <junit fork="false" haltonfailure="false" showoutput="true" >
+              <classpath refid="test-classpath"/>
+               <formatter type="plain" usefile="false"/>
+               <batchtest>
+                 <fileset dir="${buildtest.dir}">
+                     <include name="ca/po/web/action/*Po*.class" />
+                     <exclude name="ca/po/web/action/BaseStrutsTestCase.class" />
+                 </fileset>
+               </batchtest>
+           </junit>
+     </target>
+
+    <target name="Test-facade" depends="Build-test" >
+          <junit printsummary="on" fork="false" showoutput="true" >
+              <classpath refid="test-classpath" />
+              <formatter type="plain" usefile="false"/>
+              <batchtest>
+                <fileset dir="${buildtest.dir}">
+                    <exclude name="ca/po/model/service/PoBaseServiceFacadeTest.class"/>
+                    <include name="ca/po/model/service/*.class"/>
+                </fileset>
+              </batchtest>
+          </junit>
+    </target>
+
+    <target name="Test-model" depends="Build-test" >
+         <junit printsummary="on" fork="false" >
+             <classpath refid="test-classpath" />
+             <formatter type="plain" usefile="false"/>
+             <batchtest>
+               <fileset dir="${buildtest.dir}">
+                   <include name="ca/po/model/**/*Purchase*.class"/>
+                  <!-- <include name="ca/po/model/type/*.class"/> -->
+               </fileset>
+             </batchtest>
+         </junit>
+    </target>
+	
+	
+	
+   <target name="Test-util" depends="Build-test" >
+         <junit printsummary="on" fork="false" >
+             <classpath refid="test-classpath" />
+             <formatter type="plain" usefile="false"/>
+             <batchtest>
+               <fileset dir="${buildtest.dir}">
+                   <include name="ca/po/util/**/*.class"/>
+               </fileset>
+             </batchtest>
+         </junit>
+   </target>
+
+<!--
+   <target name="Test-all" depends="Test-struts,Test-facade,Test-util" />
+-->
+	
+	
+</project>

@@ -1,0 +1,8 @@
+<!-- This has the effect that all Exceptions thrown by action (not caught) are handled 
+    -  declaratively by the struts exception handler.  To be able to handle 
+	-  specific exception, declare more specialized exception within action def -->
+<global-exceptions>
+        <exception type="java.lang.Exception"
+           key="errors.general"
+		   path="/public/error.jsp" />
+</global-exceptions>

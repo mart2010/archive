@@ -1,0 +1,262 @@
+
+SQL*Loader: Release 9.2.0.1.0 - Production on Fri Jun 23 14:24:10 2006
+
+Copyright (c) 1982, 2002, Oracle Corporation.  All rights reserved.
+
+Control File:   item_import2.ctl
+Data File:      inventaire2006labosékaly2.csv
+  Bad File:     inventaire2006labosékaly2.bad
+  Discard File:  none specified
+ 
+ (Allow all discards)
+
+Number to load: ALL
+Number to skip: 1
+Errors allowed: 500
+Bind array:     64 rows, maximum of 256000 bytes
+Continuation:    none specified
+Path used:      Conventional
+
+Table IMPORT_DATA2, loaded from every logical record.
+Insert option in effect for this table: REPLACE
+TRAILING NULLCOLS option in effect
+
+   Column Name                  Position   Len  Term Encl Datatype
+------------------------------ ---------- ----- ---- ---- ---------------------
+CATNAME                             FIRST     *   ,  O(") CHARACTER            
+NAME                                 NEXT     *   ,  O(") CHARACTER            
+FORMAT                               NEXT     *   ,  O(") CHARACTER            
+SUP1ITEMNB                           NEXT     *   ,  O(") CHARACTER            
+SUP2ITEMNB                           NEXT     *   ,  O(") CHARACTER            
+SUP2                                 NEXT     *   ,  O(") CHARACTER            
+SUP1                                 NEXT     *   ,  O(") CHARACTER            
+PRICE                                NEXT     *   ,  O(") CHARACTER            
+
+Record 155: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 359: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 369: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 425: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 596: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 601: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 658: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 694: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 696: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 723: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 742: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 752: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 757: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 759: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 761: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 772: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 777: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 781: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 782: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 783: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 785: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 865: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 878: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 961: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 975: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1039: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1062: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1122: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1127: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1137: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1141: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1143: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1167: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1195: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1201: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1225: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1237: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1244: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1252: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1258: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1259: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1267: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1268: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1269: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1296: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1312: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1313: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1320: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1396: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1411: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1413: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1414: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1423: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1425: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1428: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1436: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1533: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1540: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1557: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1569: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1590: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1591: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1618: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1635: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1744: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1766: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1801: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1807: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+Record 1808: Rejected - Error on table IMPORT_DATA2.
+ORA-00001: unique constraint (PORDER.SYS_C009957) violated
+
+
+Table IMPORT_DATA2:
+  1739 Rows successfully loaded.
+  69 Rows not loaded due to data errors.
+  0 Rows not loaded because all WHEN clauses were failed.
+  0 Rows not loaded because all fields were null.
+
+
+Space allocated for bind array:                 132096 bytes(64 rows)
+Read   buffer bytes: 1048576
+
+Total logical records skipped:          1
+Total logical records read:          1808
+Total logical records rejected:        69
+Total logical records discarded:        0
+
+Run began on Fri Jun 23 14:24:10 2006
+Run ended on Fri Jun 23 14:24:19 2006
+
+Elapsed time was:     00:00:08.78
+CPU time was:         00:00:00.12

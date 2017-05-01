@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping
+>     
+    <class
+        name="ca.po.model.Item"
+        table="po_item"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="id"
+            column="id"
+            type="java.lang.Long"
+        >
+            <generator class="native">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-Item.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <version
+            name="version"
+            column="version"
+            type="int"
+        />
+
+        <property
+            name="name"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="name"
+            length="100"
+            not-null="true"
+            unique="false"
+        />
+
+        <property
+            name="desc"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="description"
+            length="100"
+        />
+
+        <property
+            name="itemNumber"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="itemNumber"
+            length="50"
+        />
+
+        <property
+            name="distributor"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="distributor"
+            length="50"
+        />
+
+        <property
+            name="format"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="format"
+            length="50"
+        />
+
+        <property
+            name="manufacturer"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="manufacturer"
+            length="50"
+        />
+
+        <set
+            name="itemSupplies"
+            lazy="true"
+            inverse="true"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache 
+                usage="nonstrict-read-write" 
+            />
+
+            <key
+                column="item_id"
+            >
+            </key>
+
+            <one-to-many
+                  class="ca.po.model.ItemSupplied"
+            />
+
+        </set>
+
+        <many-to-one
+            name="product"
+            class="ca.po.model.Product"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            foreign-key="fk_item_product"
+            column="product_id"
+            not-null="true"
+        />
+
+        <component
+            name="listPrice"
+            class="ca.po.model.type.Money"
+        >
+
+        <property
+            name="decimalAmount"
+            type="java.math.BigDecimal"
+            update="true"
+            insert="true"
+        >
+            <column
+                name="listprice_amt" 
+                sql-type="Decimal(10,2)"
+            />
+        </property>
+
+        <property
+            name="currencyCode"
+            type="string"
+            update="true"
+            insert="true"
+        >
+            <column
+                name="listprice_currency" 
+                length="3"
+            />
+        </property>
+
+        </component>
+
+        <property
+            name="createdBy"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="createdBy"
+            length="50"
+        />
+
+        <property
+            name="createdDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="createdDate"
+        />
+
+        <property
+            name="updatedBy"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="updatedBy"
+            length="50"
+        />
+
+        <property
+            name="updatedDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="updatedDate"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-Item.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

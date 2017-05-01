@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app version="2.4" 
+	xmlns="http://java.sun.com/xml/ns/j2ee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+
+
+	<display-name>PO4LAB </display-name>
+    <description>Purchase Order Application for Laboratory</description>
+
+<!-- ************** Application-Scope Context parameter Section ************** -->
+	
+    <!-- the context-param tag specifies initialization parameter values
+      - for the whole Web application (init-para tag is only for servlet/filter) i.e. linked to the ServletContext
+      -->
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>PurchaseOrder.root</param-value>
+	</context-param>
+
+    <context-param>
+        <param-name>listenPort_http</param-name>
+        <param-value>8080</param-value>
+    </context-param>
+<!--
+    <context-param>
+        <param-name>listenPort_https</param-name>
+        <param-value>8443</param-value>
+    </context-param>
+-->
+     <!-- Define the basename for the resource bundle I18N to be available to Jstl -->
+     <context-param>
+         <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+         <param-value>messages</param-value>
+     </context-param>
+     <!-- Fallback locale if no bundles found for browser's preferred locale -->
+     <!-- Force a single locale using param-name 'javax.servlet.jsp.jstl.fmt.locale' -->
+     <context-param>
+         <param-name>javax.servlet.jsp.jstl.fmt.fallbackLocale</param-name>
+         <param-value>en</param-value>
+     </context-param>
+
+	<!--
+	    - Spring application context.
+	  -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			/WEB-INF/dataAccessContext.xml,
+		    /WEB-INF/applicationContext.xml,
+			/WEB-INF/securityContext.xml
+		</param-value>
+	</context-param>
+
+	<!--
+	  - Location of the Log4J config file, for initialization and refresh checks.
+	  - Applied by Log4jConfigListener.
+	  -->
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>/WEB-INF/classes/log4j.properties</param-value>
+	</context-param>
+
+
+	<!-- ************** Filter section  ************** -->
+	<!-- *** Acegi Security filter : use Chain to avoid numerous definition *** -->
+	<filter>
+        <filter-name>Acegi Filter Chain Proxy</filter-name>
+        <filter-class>net.sf.acegisecurity.util.FilterToBeanProxy</filter-class>
+        <init-param>
+            <param-name>targetClass</param-name>
+            <param-value>net.sf.acegisecurity.util.FilterChainProxy</param-value>
+        </init-param>
+	</filter>
+
+
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+
+    <filter-mapping>
+		<filter-name>Acegi Filter Chain Proxy</filter-name>
+		<url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+
+<!-- **************  Listener section **************  -->
+	<!-- must be placed before ContextListener--> 
+	 <listener>
+	    <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	 </listener>
+
+
+    <!-- Loads the root application context of this web app at startup,
+	    - Use WebApplicationContextUtils.getWebApplicationContext(servletContext)
+	    - to access it anywhere in the web application, outside of the framework.
+	    -
+	    - The root context is the parent of all servlet-specific contexts.
+	    - This means that its beans are automatically available in these child contexts,
+	    - both for getBean(name) calls and (external) bean references.
+       -->
+
+    <listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+
+<!-- **************  Servlet section **************  -->
+
+	<!--
+	    - Struts servlet that dispatches requests to registered actions.
+    	- Reads its configuration from "struts-config.xml".
+		- A web app can just contain one such servlet.
+    -->
+	<servlet>
+		<servlet-name>action</servlet-name>
+		<servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+        <init-param>
+           <param-name>config</param-name>
+           <param-value>/WEB-INF/struts-config.xml</param-value>
+        </init-param>
+    	<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!--
+		- Dispatcher servlet mapping for the main web user interface.
+		- Refering to "action" for the Struts dispatcher.
+        - *.do pattern means that all request under application root that
+        - targets an action name followed by .do will be processed by the action servlet
+		-->
+	<servlet-mapping>
+		<servlet-name>action</servlet-name>
+		<url-pattern>*.html</url-pattern>
+	</servlet-mapping>
+
+
+	
+<!-- **************  Various config section **************   -->
+    <!--
+        - This indicates a 15minutes time out for all session object created
+        - within the Web app, all session handled by servlet can overwrite this
+        - through the setMaxInactiveInterval() attribute of the HTTPSession
+        -->
+      <session-config>
+          <session-timeout>15</session-timeout>
+      </session-config>
+
+
+    <!--
+        - Welcome file list defines the default file(s) for all directories
+        - If a request is done specifically on a directory, the welcome file
+        - will be returned only if it exist within this dir
+        -->
+	<!-- cannot be mapped to a virtual URL, is it still true with Struts 2.3?  -->
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+
+	<!-- This will make sure that at HTTP run-time exception thrown by container 
+		- will be handled the same way as exception thrown by struts action -->
+	<!-- Server error -->
+    <error-page>
+		<error-code>500</error-code>
+        <location>/public/error.jsp</location>
+    </error-page>
+	<!-- 403 access denied -->
+    <error-page>
+        <error-code>403</error-code>
+        <location>/public/error.jsp</location>
+    </error-page>
+	<!-- Bad request -->
+    <error-page>
+        <error-code>400</error-code>
+        <location>/public/error.jsp</location>
+    </error-page>
+
+<!-- not used ... 404 Page not found 
+	<error-page>
+        <error-code>404</error-code>
+        <location>/404.jsp</location>
+    </error-page>
+-->
+	
+ 
+
+
+
+
+
+
+</web-app>

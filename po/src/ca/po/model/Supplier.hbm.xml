@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping
+>     
+    <class
+        name="ca.po.model.Supplier"
+        table="po_supplier"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="id"
+            column="id"
+            type="java.lang.Long"
+        >
+            <generator class="native">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-Supplier.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="createdDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="createdDate"
+        />
+
+        <property
+            name="createdBy"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="createdBy"
+            length="50"
+        />
+
+        <property
+            name="salesRepContact"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="salesrep_contact"
+            length="100"
+        />
+
+        <property
+            name="salesRepName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="salesrep_name"
+            length="50"
+        />
+
+        <set
+            name="itemSupplies"
+            lazy="true"
+            inverse="true"
+            cascade="none"
+            sort="unsorted"
+        >
+
+            <key
+                column="supplier_id"
+            >
+            </key>
+
+            <one-to-many
+                  class="ca.po.model.ItemSupplied"
+            />
+
+        </set>
+
+        <property
+            name="name"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="name"
+            length="50"
+            not-null="true"
+            unique="true"
+        />
+
+        <property
+            name="desc"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="description"
+            length="100"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-Supplier.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

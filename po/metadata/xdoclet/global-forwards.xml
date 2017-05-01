@@ -1,0 +1,23 @@
+    
+		
+	<global-forwards>
+        <forward name="home" path="/home.html" />
+        <forward name="blank" path="/WEB-INF/jsp/blank.jsp" />            
+		
+        <!-- Forwards actions pointing to other actions -->        
+        <forward name="addUser" 
+            path="/editUser.html?username=-1" />
+        <forward name="addItem" 
+            path="/editItem.html?itemId=-1" />
+
+		<!-- used to conveniently reforward user to different action -->
+        <forward name="editItemAction" 
+            path="/editItem.html" />
+        <forward name="listItemAction" 
+            path="/listItem.html" />
+
+
+        <forward name="goToListProposedPOsAction" 
+            path="/admin/listPoForValidation.html" />
+
+    </global-forwards>

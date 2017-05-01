@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping
+>     
+    <class
+        name="ca.po.model.PurchaseOrder"
+        table="po_purchase_order"
+    >
+
+        <id
+            name="poId"
+            column="po_id"
+            type="java.lang.Long"
+        >
+            <generator class="native">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-PurchaseOrder.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <version
+            name="version"
+            column="version"
+            type="int"
+        />
+
+        <property
+            name="confirmNumber"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="confirmNumber"
+            length="30"
+        />
+
+        <property
+            name="estCalculatedCADTotalPersisted"
+            type="java.math.BigDecimal"
+            update="true"
+            insert="true"
+        >
+            <column
+                name="estimated_CAD_tot" 
+                sql-type="Decimal(10,2)"
+            />
+        </property>
+
+        <property
+            name="revisedEffectiveCADTotal"
+            type="java.math.BigDecimal"
+            update="true"
+            insert="true"
+        >
+            <column
+                name="effective_CAD_tot" 
+                sql-type="Decimal(10,2)"
+            />
+        </property>
+
+        <property
+            name="revisedEffectiveCADTax"
+            type="java.math.BigDecimal"
+            update="true"
+            insert="true"
+        >
+            <column
+                name="effective_CAD_tax" 
+                sql-type="Decimal(10,2)"
+            />
+        </property>
+
+        <property
+            name="orderFor"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="orderFor"
+            length="30"
+        />
+
+        <many-to-one
+            name="lab"
+            class="ca.po.model.Lab"
+            cascade="none"
+            outer-join="false"
+            update="true"
+            insert="true"
+            foreign-key="fk_purchase_order_lab"
+            column="lab_id"
+            not-null="true"
+        />
+
+        <many-to-one
+            name="orderByUser"
+            class="ca.po.model.User"
+            cascade="none"
+            outer-join="false"
+            update="true"
+            insert="true"
+            foreign-key="fk_purchase_order_user"
+            column="user_id"
+            not-null="true"
+        />
+
+        <property
+            name="project"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="project"
+            length="100"
+        />
+
+        <property
+            name="paymentType"
+            type="ca.po.model.dao.hibernate.usertype.PaymentTypeUserType"
+            update="true"
+            insert="true"
+            column="payment_type"
+            length="50"
+        />
+
+        <property
+            name="currentStatusChange"
+            type="ca.po.model.dao.hibernate.usertype.PoStatusCodeUserType"
+            update="true"
+            insert="true"
+            column="current_status"
+            length="30"
+        />
+
+        <property
+            name="currentStatusChangeDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="current_status_date"
+        />
+
+        <property
+            name="openDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="openDate"
+        />
+
+        <property
+            name="estimateReceptionDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="est_reception_date"
+        />
+
+            <list
+            name="poLineItems"
+            table="po_lineitem"
+            lazy="true"
+            cascade="none"
+        >
+
+            <key
+                column="po_id"
+            >
+            </key>
+
+            <index
+                column="linenum"
+            />
+
+            <composite-element
+                class="ca.po.model.PoLineItem"
+            >
+
+        <many-to-one
+            name="item"
+            class="ca.po.model.Item"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            foreign-key="fk_lineitem_item"
+            column="item_id"
+            not-null="true"
+        />
+
+        <property
+            name="quantity"
+            type="int"
+            update="true"
+            insert="true"
+            column="quantity"
+            not-null="true"
+        />
+
+        <nested-composite-element
+            name="listPrice"
+            class="ca.po.model.type.Money"
+        >
+
+        <property
+            name="decimalAmount"
+            type="java.math.BigDecimal"
+            update="true"
+            insert="true"
+        >
+            <column
+                name="listprice_amt" 
+                sql-type="Decimal(10,2)"
+            />
+        </property>
+
+        <property
+            name="currencyCode"
+            type="string"
+            update="true"
+            insert="true"
+        >
+            <column
+                name="listprice_currency" 
+                length="3"
+            />
+        </property>
+
+        </nested-composite-element>
+
+        <many-to-one
+            name="supplier"
+            class="ca.po.model.Supplier"
+            cascade="none"
+            outer-join="false"
+            update="true"
+            insert="true"
+            foreign-key="fk_lineitem_supplier"
+            column="supplier_id"
+            not-null="true"
+        />
+
+            </composite-element>
+
+        </list>
+
+    </class>
+
+</hibernate-mapping>

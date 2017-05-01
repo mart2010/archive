@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping
+>     
+    <class
+        name="ca.po.model.User"
+        table="po_user"
+    >
+
+        <id
+            name="id"
+            column="id"
+            type="java.lang.Long"
+        >
+            <generator class="native">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-User.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <version
+            name="version"
+            column="version"
+            type="int"
+        />
+
+        <property
+            name="password"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="password"
+            length="30"
+            not-null="true"
+        />
+
+        <property
+            name="email"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="email"
+            length="80"
+            not-null="true"
+        />
+
+        <property
+            name="firstName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="firstName"
+            length="50"
+            not-null="true"
+        />
+
+        <property
+            name="lastName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="lastName"
+            length="50"
+            not-null="true"
+        />
+
+        <property
+            name="phoneNumber"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="phoneNumber"
+            length="50"
+        />
+
+        <property
+            name="enabled"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="enabled"
+        />
+
+        <set
+            name="roles"
+            table="po_user_role"
+            lazy="true"
+            cascade="none"
+            sort="unsorted"
+        >
+
+            <key
+                column="user_id"
+            >
+            </key>
+
+            <element
+                column="role"
+                type="ca.po.model.dao.hibernate.usertype.RoleUserType"
+                not-null="false"
+                unique="false"
+            />
+
+        </set>
+
+        <set
+            name="labs"
+            table="po_user_lab"
+            lazy="true"
+            cascade="save-update"
+            sort="unsorted"
+        >
+
+            <key
+                column="user_id"
+            >
+            </key>
+
+            <many-to-many
+                class="ca.po.model.Lab"
+                column="lab_id"
+                outer-join="auto"
+             />
+
+        </set>
+
+        <property
+            name="createdDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="createdDate"
+        />
+
+        <property
+            name="createdBy"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="createdBy"
+            length="50"
+        />
+
+        <property
+            name="updatedBy"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="updatedBy"
+            length="50"
+        />
+
+        <property
+            name="updatedDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="updatedDate"
+        />
+
+        <property
+            name="name"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="name"
+            length="50"
+            not-null="true"
+            unique="true"
+        />
+
+        <property
+            name="desc"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="description"
+            length="100"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-User.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

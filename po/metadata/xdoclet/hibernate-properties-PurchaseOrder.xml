@@ -1,0 +1,87 @@
+        <list
+            name="poLineItems"
+            table="po_lineitem"
+            lazy="true"
+            cascade="none"
+        >
+
+            <key
+                column="po_id"
+            >
+            </key>
+
+            <index
+                column="linenum"
+            />
+
+            <composite-element
+                class="ca.po.model.PoLineItem"
+            >
+
+        <many-to-one
+            name="item"
+            class="ca.po.model.Item"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            foreign-key="fk_lineitem_item"
+            column="item_id"
+            not-null="true"
+        />
+
+        <property
+            name="quantity"
+            type="int"
+            update="true"
+            insert="true"
+            column="quantity"
+            not-null="true"
+        />
+
+        <nested-composite-element
+            name="listPrice"
+            class="ca.po.model.type.Money"
+        >
+
+        <property
+            name="decimalAmount"
+            type="java.math.BigDecimal"
+            update="true"
+            insert="true"
+        >
+            <column
+                name="listprice_amt" 
+                sql-type="Decimal(10,2)"
+            />
+        </property>
+
+        <property
+            name="currencyCode"
+            type="string"
+            update="true"
+            insert="true"
+        >
+            <column
+                name="listprice_currency" 
+                length="3"
+            />
+        </property>
+
+        </nested-composite-element>
+
+        <many-to-one
+            name="supplier"
+            class="ca.po.model.Supplier"
+            cascade="none"
+            outer-join="false"
+            update="true"
+            insert="true"
+            foreign-key="fk_lineitem_supplier"
+            column="supplier_id"
+            not-null="true"
+        />
+
+            </composite-element>
+
+        </list>
