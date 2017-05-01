@@ -1,1 +1,1 @@
-# Archives for old projects
+# Archive for old projects
